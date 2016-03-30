@@ -1,0 +1,75 @@
+<?php
+/**
+ * @file
+ * A description of what your module does.
+ */
+
+/**
+ * Implements hook_menu().
+ */
+function product_menu() {
+  $items = array();
+  $items['product/add'] = array(
+    'title' => 'Add product',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('product_page_form'),
+    'access callback' => TRUE,
+  );
+  return $items;
+}
+
+function product_page_form($form, $form_state) {
+  $form = array();
+
+  $form['id'] = array(
+    '#type' => 'textfield',
+    '#title' => '№',
+    '#size' => '4',
+    '#required' => 'TRUE',
+  );
+
+  $form ['name'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Enter product name',
+    '#size' => '20',
+    '#required' => 'TRUE',
+  );
+
+
+  $form ['category-option'] = array(
+    '#title' => 'Choose the type of product',
+    '#type' => 'select',
+    '#options' => array(0 => ('Groceries'), 1 => ('Dishes')),
+  );
+
+  $form ['expiry_date'] = array(
+    '#title' => 'Enter the expiry date for product',
+    '#type' => 'date',
+    '#size' => '20',
+    '#states' => array(
+      'visible' => array(
+        ':input[name ="category-option"]' => array('value' => 0),
+      ),
+    ),
+  );
+
+
+  $form ['email'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Email',
+    '#size' => '20',
+    '#required' => 'TRUE',
+  );
+  $form ['telephone'] = array(
+    '#type' => 'textfield',
+    '#title' => 'Enter phone number',
+    '#size' => '20',
+    '#required' => 'TRUE',
+  );
+
+  $form ['submit'] = array(
+    '#type' => 'submit',
+    '#value' => 'Submit'
+  );
+  return $form;
+}
