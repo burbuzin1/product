@@ -26,17 +26,20 @@ function product_page_form($form, $form_state) {
     '#size' => '4',
     '#required' => 'TRUE',
   );
+
   $form ['name'] = array(
     '#type' => 'textfield',
     '#title' => 'Enter product name',
     '#size' => '20',
     '#required' => 'TRUE',
   );
+
   $form ['category'] = array(
     '#title' => 'Choose the type of product',
     '#type' => 'select',
     '#options' => array(0 => ('Groceries'), 1 => ('Dishes')),
   );
+  /**
   $form ['expiry'] = array(
     '#title' => 'Enter the expiry date for product',
     '#type' => 'date',
@@ -59,23 +62,29 @@ function product_page_form($form, $form_state) {
     '#size' => '20',
     '#required' => 'TRUE',
   );
+
+*/
   $form ['submit'] = array(
     '#type' => 'submit',
-    '#value' => 'Submit'
+    '#value' => 'Submit',
   );
+  $form['#submit'][] = 'my_table_insert_form_submit';
+
   return $form;
 }
 
 function my_table_insert_form_submit($form, $form_state) {
-  $query = db_insert('my_table')
+  $query = db_insert('my_table1')
     ->fields(array(
       'number' => $form_state['values']['number'],
       'name' => $form_state['values']['name'],
-      'category' => $form_state['values']['category'],
+
+     'category' => $form_state['values']['category'],
+      /**
       'expiry' => $form_state['values']['expiry'],
       'email' => $form_state['values']['email'],
       'telephone' => $form_state['values']['telephone'],
-
+**/
     ))
     ->execute();
   if ($query > 0){
