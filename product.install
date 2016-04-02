@@ -1,2 +1,41 @@
 <?php
 
+/**
+ * Implements hook_schema()
+ */
+/*
+function my_database_schema() {
+  $schema['my_table'] = array(
+    'description' => 'Custom table from My database module.',
+    'fields' => array(
+      'id' => array(
+        'description' => 'The primary identifier for a record.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'number' => array(
+        'description' => 'Field for integer number.',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'Field for product name',
+        'type' => 'varchar',
+        'length' => '150',
+        'not null' => TRUE,
+      ),
+      'category' => array(
+        'description' => 'Field for product type',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+    ),
+    'primary keys' => array(
+      'id' => array('id')
+    ),
+  );
+
+  return $schema;
+}

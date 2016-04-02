@@ -3,7 +3,6 @@
  * @file
  * A description of what your module does.
  */
-
 /**
  * Implements hook_menu().
  */
@@ -21,39 +20,33 @@ function product_menu() {
 function product_page_form($form, $form_state) {
   $form = array();
 
-  $form['id'] = array(
+  $form['number'] = array(
     '#type' => 'textfield',
     '#title' => '№',
     '#size' => '4',
     '#required' => 'TRUE',
   );
-
   $form ['name'] = array(
     '#type' => 'textfield',
     '#title' => 'Enter product name',
     '#size' => '20',
     '#required' => 'TRUE',
   );
-
-
-  $form ['category-option'] = array(
+  $form ['category'] = array(
     '#title' => 'Choose the type of product',
     '#type' => 'select',
     '#options' => array(0 => ('Groceries'), 1 => ('Dishes')),
   );
-
-  $form ['expiry_date'] = array(
+  $form ['expiry'] = array(
     '#title' => 'Enter the expiry date for product',
     '#type' => 'date',
     '#size' => '20',
     '#states' => array(
       'visible' => array(
-        ':input[name ="category-option"]' => array('value' => 0),
+        ':input[name ="category"]' => array('value' => 0),
       ),
     ),
   );
-
-
   $form ['email'] = array(
     '#type' => 'textfield',
     '#title' => 'Email',
@@ -66,10 +59,29 @@ function product_page_form($form, $form_state) {
     '#size' => '20',
     '#required' => 'TRUE',
   );
-
   $form ['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Submit'
   );
   return $form;
+}
+
+function my_table_insert_form_submit($form, $form_state) {
+  $query = db_insert('my_table')
+    ->fields(array(
+      'number' => $form_state['values']['number'],
+      'name' => $form_state['values']['name'],
+      'category' => $form_state['values']['category'],
+      'expiry' => $form_state['values']['expiry'],
+      'email' => $form_state['values']['email'],
+      'telephone' => $form_state['values']['telephone'],
+
+    ))
+    ->execute();
+  if ($query > 0){
+    drupal_set_message('Data succesfully load');
+  }
+  else {
+    drupal_set_message(t("Data hasn't been sent."), 'error');
+  }
 }
