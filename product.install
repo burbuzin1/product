@@ -5,36 +5,65 @@
  */
 
 function product_schema() {
-  $schema['my_table1'] = array(
-  'description' => 'description',
-  'fields' => array(
-    'id' => array(
-      'description' => 'id',
-      'type' => 'serial',
-      'unsigned' => TRUE,
-      'size' => 'big',
-      'not null' => TRUE,
-    ),
-    'number' => array(
-      'description' => 'number',
-      'type' => 'int',
-      'not null' => TRUE,
-    ),
-    'name' => array(
-      'description' => 'name',
-      'type' => 'text',
-      'not null' => TRUE,
-    ),
-    'category' => array(
-      'description' => 'category',
-      'type' => 'int',
-      'size' => 'tiny',
-      'not null' => TRUE,
-    ),
+  $schema['my_table'] = array(
+    'description' => 'description',
+    'fields' => array(
+      'id' => array(
+        'description' => 'id',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'size' => 'big',
+        'not null' => TRUE,
+      ),
+      'number' => array(
+        'description' => 'number',
+        'type' => 'int',
+        'not null' => TRUE,
+      ),
+      'name' => array(
+        'description' => 'name',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'category' => array(
+        'description' => 'category',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'expiry' => array(
+        'description' => 'expiry',
+        'type' => 'text',
+        'not null' => FALSE,
+      ),
+      'email' => array(
+        'description' => 'email',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+      'telephone' => array(
+        'description' => 'telephone',
+        'type' => 'text',
+        'not null' => TRUE,
+      ),
+
     ),
     'unique keys' => array(
       'id' => array('id')
     ),
   );
   return $schema;
+}
+
+function hook_disable() {
+  function product_uninstall_schema($module) {
+    $schema = drupal_get_schema_unprocessed($module);
+    _drupal_schema_initialize($schema, $module, FALSE);
+
+    foreach ($schema as $table) {
+      if (db_table_exists($table['my_table'])) {
+        db_drop_table($table['my_table']);
+      }
+    }
+  }
+
 }

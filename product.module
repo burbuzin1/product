@@ -8,45 +8,89 @@
  */
 function product_menu() {
   $items = array();
+  /**
+   * Page shows products add form
+   */
   $items['product/add'] = array(
-    'title' => 'Add product',
+    'title' => 'Product add',
     'page callback' => 'drupal_get_form',
     'page arguments' => array('product_page_form'),
+    'access callback' => TRUE,
+  );
+  /**
+   * Product list page
+   */
+  $items['product/list'] = array(
+    'title' => 'Product list',
+    'page callback' => 'product_list_table',
     'access callback' => TRUE,
   );
   return $items;
 }
 
+function product_list_table() {
+  $header = array(
+    t('№'),
+    t('Name'),
+    t('Category'),
+    t('Expiry'),
+    t('Email'),
+    t('Telephone')
+  );
+  $rows = array();
+  $query = db_select('my_table', 't')
+    ->fields('t', array(
+      'number',
+      'name',
+      'category',
+      'expiry',
+      'email',
+      'telephone'
+    ))
+    ->execute();
+  while ($value = $query->fetchAssoc()) {
+    $rows[] = array(
+      $value['number'],
+      $value['name'],
+      $value['category'],
+      $value['expiry'],
+      $value['email'],
+      $value['telephone'],
+    );
+  }
+  return theme('table', array('header' => $header, 'rows' => $rows));
+}
+
 function product_page_form($form, $form_state) {
   $form = array();
-
   $form['number'] = array(
     '#type' => 'textfield',
     '#title' => '№',
     '#size' => '4',
     '#required' => 'TRUE',
   );
-
   $form ['name'] = array(
     '#type' => 'textfield',
     '#title' => 'Enter product name',
     '#size' => '20',
     '#required' => 'TRUE',
   );
-
   $form ['category'] = array(
     '#title' => 'Choose the type of product',
     '#type' => 'select',
-    '#options' => array(0 => ('Groceries'), 1 => ('Dishes')),
+    '#options' => array(
+      'Dishes' => 'Dishes',
+      'Groceries' => 'Groceries',
+
+    ),
   );
-  /**
   $form ['expiry'] = array(
     '#title' => 'Enter the expiry date for product',
     '#type' => 'date',
     '#size' => '20',
     '#states' => array(
       'visible' => array(
-        ':input[name ="category"]' => array('value' => 0),
+        ':input[name = "category"]' => array('value' => 'Groceries'),
       ),
     ),
   );
@@ -62,8 +106,6 @@ function product_page_form($form, $form_state) {
     '#size' => '20',
     '#required' => 'TRUE',
   );
-
-*/
   $form ['submit'] = array(
     '#type' => 'submit',
     '#value' => 'Submit',
@@ -74,21 +116,18 @@ function product_page_form($form, $form_state) {
 }
 
 function my_table_insert_form_submit($form, $form_state) {
-  $query = db_insert('my_table1')
+  $query = db_insert('my_table')
     ->fields(array(
       'number' => $form_state['values']['number'],
       'name' => $form_state['values']['name'],
-
-     'category' => $form_state['values']['category'],
-      /**
-      'expiry' => $form_state['values']['expiry'],
+      'category' => $form_state['values']['category'],
+      //    'expiry' => $form_state['values']['expiry'],
       'email' => $form_state['values']['email'],
       'telephone' => $form_state['values']['telephone'],
-**/
     ))
     ->execute();
-  if ($query > 0){
-    drupal_set_message('Data succesfully load');
+  if ($query > 0) {
+    drupal_set_message('Data successfully load');
   }
   else {
     drupal_set_message(t("Data hasn't been sent."), 'error');
