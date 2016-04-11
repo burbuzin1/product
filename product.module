@@ -35,7 +35,8 @@ function product_list_table() {
     t('Category'),
     t('Expiry'),
     t('Email'),
-    t('Telephone')
+    t('Telephone'),
+    t('Options')
   );
   $rows = array();
   $query = db_select('my_table', 't')
@@ -47,6 +48,8 @@ function product_list_table() {
       'email',
       'telephone'
     ))
+    -> extend('PagerDefault')
+    ->limit(5)
     ->execute();
   while ($value = $query->fetchAssoc()) {
     $rows[] = array(
@@ -56,9 +59,18 @@ function product_list_table() {
       $value['expiry'],
       $value['email'],
       $value['telephone'],
+      $form['google_link']['#markup']=l('Eit','http://google.com').(' / '). l('Delete','http://google.com') ,
     );
   }
-  return theme('table', array('header' => $header, 'rows' => $rows));
+  return array(
+    array(
+      '#theme' => 'table',
+      '#header' => $header,
+      '#rows' => $rows),
+    array(
+      '#theme' => 'pager',
+      '#quantity' => 7,)
+  );
 }
 
 function product_page_form($form, $form_state) {
@@ -110,6 +122,8 @@ function product_page_form($form, $form_state) {
     '#type' => 'submit',
     '#value' => 'Submit',
   );
+  //$form ['list'] = '<a href="http://localhost/drupal_goods/product/list"> LIST </a>'; //Тестовая ссылка в форме
+
   $form['#submit'][] = 'my_table_insert_form_submit';
   $form['submit']['#validate'][] = 'product_email_validate';
   //$form['submit']['#validate'][] = 'product_date_validate';
